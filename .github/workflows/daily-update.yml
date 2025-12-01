@@ -1,0 +1,51 @@
+name: Update Bitcoin Prices
+
+# 触发机制：
+# 1. schedule: 每天国际标准时间 00:00 (北京时间早上8点) 自动运行
+# 2. workflow_dispatch: 允许在 Actions 页面手动点击按钮测试
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+# 授予机器人修改仓库代码的权限
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 下载代码仓库
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. 安装 Node.js 环境 (版本 18 兼容性较好)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 3. 安装项目依赖 (主要是 node-fetch)
+      - name: Install dependencies
+        run: npm install
+
+      # 4. 运行更新脚本
+      - name: Run update script
+        run: node scripts/update-price-history.js
+
+      # 5. 提交并推送更新
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action Bot'
+          git config --global user.email 'action@github.com'
+          # 检查文件是否真的变了，变了才提交
+          if [[ -n $(git status -s public/data/price-candles.json) ]]; then
+            git add public/data/price-candles.json
+            git commit -m "Auto-update: Daily Bitcoin price data"
+            git push
+            echo "Successfully updated price data."
+          else
+            echo "No changes in price data."
+          fi
