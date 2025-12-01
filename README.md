@@ -1,3 +1,4 @@
+[![Update Bitcoin Prices](https://github.com/ErchildeW/bitcoin-charts/actions/workflows/daily-update.yml/badge.svg)](https://github.com/ErchildeW/bitcoin-charts/actions/workflows/daily-update.yml)
 # Bitcoin Charts
 
 ![lint status](https://github.com/cilphex/bitcoin-charts/actions/workflows/lint.yml/badge.svg)
