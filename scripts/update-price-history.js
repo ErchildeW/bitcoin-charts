@@ -40,10 +40,16 @@ async function getNewCandles() {
   // Convert string values to numbers.
   newEntries = newEntries.map(entry => entry.map(val => Number(val)));
 
-  // First ensure the timestamps are lined up properly.
-  // The first timestamp from the new set should match the last one from the existing set.
-  if (newEntries[0][0] != candleEntries[candleEntries.length-1][0]) {
-    throw "Timestamps do not match up.";
+  try {
+    // First ensure the timestamps are lined up properly.
+    // The first timestamp from the new set should match the last one from the existing set.
+    if (newEntries[0][0] != candleEntries[candleEntries.length - 1][0]) {
+      throw "Timestamps do not match up.";
+    }
+  }
+  catch (e) {
+    console.log('ERROR!!!!', e);
+    return;
   }
 
   // Remove most recent, outdated value.

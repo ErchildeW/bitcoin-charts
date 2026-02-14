@@ -54,7 +54,6 @@ function Home(props) {
         the path of least resistance: the resource allocation mechanism
         that preserves purchasing power and the ability to predictably offset
         value claims over time.</p>
-        <p>Bitcoin is that.</p>
       </div>
 
       <div className={styles.links}>
