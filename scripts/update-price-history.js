@@ -48,7 +48,9 @@ async function getNewCandles() {
     }
   }
   catch (e) {
-    console.log('ERROR!!!!', e);
+    console.log('ERROR:', e);
+    console.log('First timestamp from new set:', newEntries[0][0]);
+    console.log('Last entry from old set:', candleEntries[candleEntries.length - 1][0]);
     return;
   }
 
