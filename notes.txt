@@ -2,3 +2,8 @@ Notes:
 - onMouseMove callbacks use slightly different stuff for setting up index/xPos
 - rename css class names to things like 'darkBlue', 'lightBlue', 'darkRed', 'lightRed', etc
 - consolidate the estimates components
+
+- To fix sqrt to log charts:
+  - look for sqrtDaysPassed in chart-data.js and make a log version
+  - look for xScale: scalePower in the chart components and change to
+    scaleLog instead. (Domain cannot start with 0 in scaleLog.)

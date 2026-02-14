@@ -67,6 +67,10 @@ class PowerLawScaleChart extends Chart {
         domain: [0, maxDays],
         exponent: 0.5,
       }),
+      // xScale: scaleLog({
+      //   range: [0, innerWidth],
+      //   domain: [1, maxDays],
+      // }),
       yScale: scaleLog({
         range: [innerHeight, 0],
         domain: [
