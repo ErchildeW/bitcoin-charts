@@ -38,13 +38,7 @@ async function getNewCandles() {
   }
 
   // Convert string values to numbers.
-  // 修正：只提取 [时间戳, 收盘价]
-// Kraken返回格式是 [time, open, high, low, close, vwap, volume, count]
-// 我们只需要第0个(time)和第4个(close)
-  newEntries = newEntries.map(entry => [
-    Number(entry[0]), 
-    Number(entry[4])
-]);
+  newEntries = newEntries.map(entry => entry.map(val => Number(val)));
 
   // First ensure the timestamps are lined up properly.
   // The first timestamp from the new set should match the last one from the existing set.
