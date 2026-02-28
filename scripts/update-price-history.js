@@ -29,32 +29,33 @@ async function getNewPriceData(sinceTimestamp) {
 async function getNewCandles() {
   const candleData = getCandleData();
   let candleEntries = candleData.candles;
-  const lastCandle = candleEntries[candleEntries.length-2]; // minus two to overwrite the last value, which is never set in stone
+  
+  // 拿倒数第二个值作为起点是很好的做法，能确保最后一个未收盘的 K 线被更新
+  const lastCandle = candleEntries[candleEntries.length-2]; 
   const lastCandleTimestamp = lastCandle[0];
   let newEntries = await getNewPriceData(lastCandleTimestamp);
 
-  if (!newEntries) {
-    throw "Price data not retrieved";
+  if (!newEntries || newEntries.length === 0) {
+    throw "Price data not retrieved or is empty";
   }
 
   // Convert string values to numbers.
   newEntries = newEntries.map(entry => entry.map(val => Number(val)));
 
-  // First ensure the timestamps are lined up properly.
-  // The first timestamp from the new set should match the last one from the existing set.
-  //   if (newEntries[0][0] != candleEntries[candleEntries.length-1][0]) {
-    //   throw "Timestamps do not match up.";
-  //   }
+  // 获取新抓取的数据第一条的时间戳
+  const firstNewTimestamp = newEntries[0][0];
 
-  // Remove most recent, outdated value.
-  candleEntries.pop();
+  // 过滤掉所有与新数据产生重叠的旧 K 线数据
+  candleEntries = candleEntries.filter(candle => candle[0] < firstNewTimestamp);
+  
+  // 拼接新数据
   candleEntries = candleEntries.concat(newEntries);
   candleData.candles = candleEntries;
 
   // Write the new data.
   writeCandleData(candleData);
 
-  console.log('Added new entries', newEntries)
+  console.log('Added new entries. Total candles count:', candleEntries.length);
 }
 
 getNewCandles();
