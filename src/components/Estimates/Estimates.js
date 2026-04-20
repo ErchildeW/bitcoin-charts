@@ -25,6 +25,50 @@ class EstimatesContent extends React.Component {
     };
   }
 
+  getEstimatePrice(item, regressionType, standardDeviation) {
+    if (!item || !Number.isFinite(item[regressionType])) {
+      return null;
+    }
+
+    return Math.round(Math.pow(10, item[regressionType] - standardDeviation));
+  }
+
+  renderYearEstimate(year, i, regressionType, standardDeviation) {
+    const estimate = this.getEstimatePrice(year, regressionType, standardDeviation);
+    const yearLabel = year
+      ? moment(year.date).year()
+      : moment().year() + i;
+
+    return (
+      <tr key={i}>
+        <td>{yearLabel}</td>
+        <td>{moneyFormat(estimate)}</td>
+      </tr>
+    );
+  }
+
+  renderMagnitudeEstimate(magnitude, i, regressionType, standardDeviation) {
+    const targetPrice = Math.pow(10, i+3);
+
+    if (!magnitude || !Number.isFinite(magnitude[regressionType])) {
+      return (
+        <tr key={i}>
+          <td>{moneyFormat(targetPrice)}</td>
+          <td>Not projected</td>
+        </tr>
+      );
+    }
+
+    const projectedPrice = Math.round(Math.pow(10, Math.floor(magnitude[regressionType] - standardDeviation)));
+
+    return (
+      <tr key={i}>
+        <td>{moneyFormat(projectedPrice)}</td>
+        <td>{moment(magnitude.date).format("MMM D, YYYY")}</td>
+      </tr>
+    );
+  }
+
   render() {
     const {
       chartType,
@@ -78,12 +122,7 @@ class EstimatesContent extends React.Component {
           <table>
             <tbody>
               {years.map((year, i) =>
-                <tr key={i}>
-                  <td>{moment(year.date).year()}</td>
-                  <td>
-                    {moneyFormat(Math.round(Math.pow(10, year[regressionType] - standardDeviation)))}
-                  </td>
-                </tr>,
+                this.renderYearEstimate(year, i, regressionType, standardDeviation),
               )}
             </tbody>
           </table>
@@ -94,10 +133,7 @@ class EstimatesContent extends React.Component {
           <table>
             <tbody>
               {magnitudes.map((magnitude, i) =>
-                <tr key={i}>
-                  <td>{moneyFormat(Math.round(Math.pow(10, Math.floor(magnitude[regressionType] - standardDeviation))))}</td>
-                  <td>{moment(magnitude.date).format("MMM D, YYYY")}</td>
-                </tr>,
+                this.renderMagnitudeEstimate(magnitude, i, regressionType, standardDeviation),
               )}
             </tbody>
           </table>

@@ -72,6 +72,15 @@ class EstimatesStore {
       moment(i.date).isSame(moment(), "day"),
     );
 
+    if (!todayData) {
+      runInAction(() => this.today = {
+        expected: null,
+        min: null,
+        max: null,
+      });
+      return;
+    }
+
     const regression = todayData[regressionType];
     const expected = Math.round(Math.pow(10, regression));
     let min, max;
